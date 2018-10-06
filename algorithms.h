@@ -71,9 +71,33 @@ template<class ForwardIt, class T>
 ForwardIt
 remove(ForwardIt first, ForwardIt last, const T& value);
 
-template<class BidirIt, class T>
-BidirIt
-remove2(BidirIt first, BidirIt last, const T& value);
+template<class RanIt, class T>
+RanIt
+remove2(RanIt first, RanIt last, const T& value);
+
+template<class BidirIt>
+void
+reverse(BidirIt first, BidirIt last);
+
+template<class BidirIt, class OutputIt>
+OutputIt
+reverseCopy(BidirIt first, BidirIt last, OutputIt out);
+
+template<class ForwardIt>
+ForwardIt
+rotate(ForwardIt first, ForwardIt mid, ForwardIt last);
+
+template<class T>
+void
+swap(T& lhs, T& rhs);
+
+template<class ForwardIt>
+ForwardIt
+unique(ForwardIt first, ForwardIt last);
+
+template<class RanIt>
+void
+shuffle(RanIt first, RanIt second);
 
 } // namespace ktl
 

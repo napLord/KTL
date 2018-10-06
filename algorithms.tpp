@@ -1,3 +1,5 @@
+#include <cstdio>
+#include <iostream>
 #include <unordered_set>
 
 namespace ktl
@@ -176,11 +178,11 @@ remove(ForwardIt first, ForwardIt last, const T& value)
     return first;
 }
 
-template<class BidirIt, class T>
-BidirIt
-remove2(BidirIt first, BidirIt last, const T& value)
+template<class RanIt, class T>
+RanIt
+remove2(RanIt first, RanIt last, const T& value)
 {
-    BidirIt ffirst = first;
+    RanIt ffirst = first;
     while (*--last == value)
         ;
     first = ktl::find(first, last, value);
@@ -195,6 +197,74 @@ remove2(BidirIt first, BidirIt last, const T& value)
             ++first;
         }
     return ++last;
+}
+
+template<class T>
+void
+swap(T& lhs, T& rhs)
+{
+    T tmp = std::move(lhs);
+    lhs = std::move(rhs);
+    rhs = std::move(tmp);
+}
+
+template<class BidirIt>
+void
+reverse(BidirIt first, BidirIt last)
+{
+    while (first != last && first != --last)
+        swap(*first++, *last);
+}
+
+template<class BidirIt, class OutputIt>
+OutputIt
+reverseCopy(BidirIt first, BidirIt last, OutputIt out)
+{
+    while (last-- != first)
+        *out++ = *last;
+    return out;
+}
+
+template<class ForwardIt>
+void
+rotate(ForwardIt first, ForwardIt mid, ForwardIt last)
+{
+    ForwardIt next = mid;
+    while (first != next)
+        {
+            swap(*first++, *next++);
+            if (next == last)
+                next = mid;
+            if (first == mid)
+                mid = next;
+        }
+}
+
+template<class ForwardIt>
+ForwardIt
+unique(ForwardIt first, ForwardIt last)
+{
+    for (ForwardIt i = first; i != last; ++i)
+        {
+            while (*i == *first)
+                ++i;
+            if (++first != i)
+                *first = *i;
+        }
+    return ++first;
+}
+
+template<class RanIt>
+void
+shuffle(RanIt first, RanIt second)
+{
+    srand(time(0));
+    size_t n = std::distance(first, second);
+    for (size_t i = n - 1; i > 0; --i)
+        {
+            size_t j = rand() % (i + 1);
+            swap(first[j], first[i]);
+        }
 }
 
 } // namespace ktl
