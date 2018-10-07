@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <iostream>
 #include <unordered_set>
+#include <utility>
 
 namespace ktl
 {
@@ -230,7 +231,7 @@ void
 rotate(ForwardIt first, ForwardIt mid, ForwardIt last)
 {
     ForwardIt next = mid;
-    while (first != next)
+    while (!(first == next))
         {
             swap(*first++, *next++);
             if (next == last)
@@ -244,14 +245,31 @@ template<class ForwardIt>
 ForwardIt
 unique(ForwardIt first, ForwardIt last)
 {
-    for (ForwardIt i = first; i != last; ++i)
+    for (ForwardIt i = first; !(i == last);)
         {
-            while (*i == *first)
+            ForwardIt prevFirst = first;
+            if (!(first == i))
+                *first = std::move(*i);
+            ++first;
+            ++i;
+            while (!(i == last) && *prevFirst == *i)
                 ++i;
-            if (++first != i)
-                *first = *i;
         }
-    return ++first;
+    return first;
+}
+
+template<class ForwardIt, class OutputIt>
+OutputIt
+uniqueCopy(ForwardIt first, ForwardIt last, OutputIt out)
+{
+    for (ForwardIt i = first; !(i == last);)
+        {
+            *out++ = *i++;
+            while (!(i == last) && *first == *i)
+                ++i;
+            first = i;
+        }
+    return out;
 }
 
 template<class RanIt>
@@ -265,6 +283,76 @@ shuffle(RanIt first, RanIt second)
             size_t j = rand() % (i + 1);
             swap(first[j], first[i]);
         }
+}
+
+template<class InputIt, class UnaryPredicate>
+bool
+isPartitioned(InputIt first, InputIt last, UnaryPredicate p)
+{
+    for (; first != last; ++first)
+        if (!p(*first))
+            break;
+
+    for (; first != last; ++first)
+        if (p(*first))
+            return false;
+    return true;
+}
+
+template<class ForwardIt, class UnaryPredicate>
+ForwardIt
+partition(ForwardIt first, ForwardIt last, UnaryPredicate p)
+{
+    first = findIfNot(first, last, p);
+
+    for (ForwardIt i = first; i != last; ++i)
+        {
+            if (p(*i))
+                swap(*first++, *i);
+        }
+    return first;
+}
+
+template<class ForwardIt, class T>
+ForwardIt
+lowerBound(ForwardIt first, ForwardIt last, const T& val)
+{
+    size_t count = std::distance(first, last);
+    ForwardIt i;
+    while (count > 0)
+        {
+            i = first;
+            std::advance(i, count / 2);
+            if (*i < val)
+                {
+                    first = ++i;
+                    count -= count / 2 + 1;
+                }
+            else
+                count = count / 2;
+        }
+    return first;
+}
+
+template<class ForwardIt, class T>
+ForwardIt
+upperBound(ForwardIt first, ForwardIt last, const T& val)
+{
+    size_t count = std::distance(first, last);
+    ForwardIt i;
+    while (count > 0)
+        {
+            i = first;
+            std::advance(i, count / 2);
+            if (*i <= val)
+                {
+                    first = ++i;
+                    count -= count / 2 + 1;
+                }
+            else
+                count = count / 2;
+        }
+    return first;
 }
 
 } // namespace ktl

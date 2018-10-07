@@ -95,10 +95,29 @@ template<class ForwardIt>
 ForwardIt
 unique(ForwardIt first, ForwardIt last);
 
+template<class ForwardIt, class OutputIt>
+ForwardIt
+uniqueCopy(ForwardIt first, ForwardIt last, OutputIt out);
+
 template<class RanIt>
 void
 shuffle(RanIt first, RanIt second);
 
+template<class InputIt, class UnaryPredicate>
+bool
+isPartitioned(InputIt first, InputIt last, UnaryPredicate p);
+
+template<class ForwardIt, class UnaryPredicate>
+ForwardIt
+partition(ForwardIt first, ForwardIt last, UnaryPredicate p);
+
+template<class ForwardIt, class T>
+ForwardIt
+lowerBound(ForwardIt first, ForwardIt last, const T& val);
+
+template<class ForwardIt, class T>
+ForwardIt
+upperBound(ForwardIt first, ForwardIt last, const T& val);
 } // namespace ktl
 
 #include "algorithms.tpp"
