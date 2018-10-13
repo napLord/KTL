@@ -169,7 +169,10 @@ moveIf(InputIt first, InputIt last, OutputIt out, UnaryPredicate p)
 }
 
 template<class ForwardIt, class T>
-ForwardIt
+typename std::enable_if<
+  !std::is_same<typename std::iterator_traits<ForwardIt>::iterator_category,
+                std::random_access_iterator_tag>::value,
+  ForwardIt>::type
 remove(ForwardIt first, ForwardIt last, const T& value)
 {
     first = ktl::find(first, last, value);
@@ -180,8 +183,12 @@ remove(ForwardIt first, ForwardIt last, const T& value)
 }
 
 template<class RanIt, class T>
-RanIt
-remove2(RanIt first, RanIt last, const T& value)
+typename std::enable_if<
+  std::is_same<typename std::iterator_traits<RanIt>::iterator_category,
+               std::random_access_iterator_tag>::value,
+  RanIt>::type
+// check if can be implemented in bidir iterators
+remove(RanIt first, RanIt last, const T& value)
 {
     RanIt ffirst = first;
     while (*--last == value)
@@ -353,6 +360,67 @@ upperBound(ForwardIt first, ForwardIt last, const T& val)
                 count = count / 2;
         }
     return first;
+}
+
+template<class InputIt1, class InputIt2, class OutputIt>
+OutputIt
+merge(InputIt1 first1,
+      InputIt1 last1,
+      InputIt2 first2,
+      InputIt2 last2,
+      OutputIt out)
+{
+    while (first1 != last1 && first2 != last2)
+        *out++ = (*first1 < *first2 ? *first1++ : *first2++);
+    if (first1 == last1)
+        out = std::copy(first2, last2, out);
+    else
+        out = std::copy(first1, last1, out);
+
+    return out;
+}
+
+template<class InputIt1, class InputIt2>
+bool
+includes(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2)
+{
+    if (first2 == last2)
+        return true;
+
+    first1 = lowerBound(first1, last1, *first2);
+    while (first2 != last2)
+        {
+            if (first1 == last1 || *first2 < *first1)
+                return false;
+            if (*first1 < *first2)
+                ++first1;
+            else
+                (++first2, ++first1);
+        }
+    return true;
+}
+
+template<class InputIt1, class InputIt2, class OutputIt>
+OutputIt
+setDifference(InputIt1 first1,
+              InputIt1 last1,
+              InputIt2 first2,
+              InputIt2 last2,
+              OutputIt out)
+{
+    while (first1 != last1)
+        {
+            if (first2 == last2)
+                return ktl::copy(first1, last1, out);
+            if (*first1 < *first2)
+                *out++ = *first1++;
+            else if (*first2 < *first1)
+                ++first2;
+            else
+                (++first1, ++first2);
+        }
+
+    return out;
 }
 
 } // namespace ktl

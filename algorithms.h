@@ -1,4 +1,6 @@
 #pragma once
+#include <iterator>
+#include <type_traits>
 
 namespace ktl
 {
@@ -68,12 +70,18 @@ OutputIt
 moveif(InputIt first, InputIt last, OutputIt out, UnaryPredicate p);
 
 template<class ForwardIt, class T>
-ForwardIt
+typename std::enable_if<
+  !std::is_same<typename std::iterator_traits<ForwardIt>::iterator_category,
+                std::random_access_iterator_tag>::value,
+  ForwardIt>::type
 remove(ForwardIt first, ForwardIt last, const T& value);
 
 template<class RanIt, class T>
-RanIt
-remove2(RanIt first, RanIt last, const T& value);
+typename std::enable_if<
+  std::is_same<typename std::iterator_traits<RanIt>::iterator_category,
+               std::random_access_iterator_tag>::value,
+  RanIt>::type
+remove(RanIt first, RanIt last, const T& value);
 
 template<class BidirIt>
 void
@@ -118,6 +126,27 @@ lowerBound(ForwardIt first, ForwardIt last, const T& val);
 template<class ForwardIt, class T>
 ForwardIt
 upperBound(ForwardIt first, ForwardIt last, const T& val);
+
+template<class InputIt1, class InputIt2, class OutputIt>
+OutputIt
+merge(InputIt1 first1,
+      InputIt1 last1,
+      InputIt2 first2,
+      InputIt2 last2,
+      OutputIt out);
+
+template<class InputIt1, class InputIt2>
+bool
+includes(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2);
+
+template<class InputIt1, class InputIt2, class OutputIt>
+OutputIt
+setDifference(InputIt1 first1,
+              InputIt1 last1,
+              InputIt2 first2,
+              InputIt2 last2,
+              OutputIt out);
+
 } // namespace ktl
 
 #include "algorithms.tpp"
