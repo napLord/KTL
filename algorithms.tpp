@@ -15,7 +15,6 @@ find(InputIt first, InputIt second, const T& val)
             if (*first == val)
                 break;
         }
-
     return first;
 }
 
@@ -59,7 +58,7 @@ findLast(BidirIt first, BidirIt last, const T& val)
 
 template<class InputIt, class UnaryPredicate>
 bool
-all_of(InputIt first, InputIt second, UnaryPredicate p)
+allOf(InputIt first, InputIt second, UnaryPredicate p)
 {
     if (find_if_not(first, second, p) != second)
         return false;
@@ -68,7 +67,7 @@ all_of(InputIt first, InputIt second, UnaryPredicate p)
 
 template<class InputIt, class UnaryPredicate>
 bool
-any_of(InputIt first, InputIt second, UnaryPredicate p)
+anyOf(InputIt first, InputIt second, UnaryPredicate p)
 {
     if (find_if(first, second, p) == second)
         return false;
@@ -77,7 +76,7 @@ any_of(InputIt first, InputIt second, UnaryPredicate p)
 
 template<class InputIt, class UnaryPredicate>
 bool
-none_of(InputIt first, InputIt second, UnaryPredicate p)
+noneOf(InputIt first, InputIt second, UnaryPredicate p)
 {
     if (find_if(first, second, p) != second)
         return false;

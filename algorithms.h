@@ -104,7 +104,7 @@ ForwardIt
 unique(ForwardIt first, ForwardIt last);
 
 template<class ForwardIt, class OutputIt>
-ForwardIt
+OutputIt
 uniqueCopy(ForwardIt first, ForwardIt last, OutputIt out);
 
 template<class RanIt>
